@@ -1,0 +1,6 @@
+setuptools>=35.0.1
+Flask>=0.12.1
+Jinja2>=2.8
+M2Crypto>=0.26.0
+Werkzeug>=0.12.1
+
