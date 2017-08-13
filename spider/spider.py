@@ -7,6 +7,7 @@ import re
 import json
 
 login_url = 'https://www.bhinneka.com/aspx/Login.aspx'
+logout_url = 'https://www.bhinneka.com/aspx/login.aspx'
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 5.1; rv:52.0) Gecko/20100101 Firefox/52.0",
@@ -35,8 +36,8 @@ def login(user, pwd):
         "__VIEWSTATE": __VIEWSTATE,
         "__VIEWSTATEGENERATOR": __VIEWSTATEGENERATOR,
         "ctl00$Search": "",
-        "ctl00$content$LoginDefault$Password": "apeng1234",
-        "ctl00$content$LoginDefault$UserName": "lwangrabbit@qq.com",
+        "ctl00$content$LoginDefault$Password": pwd,
+        "ctl00$content$LoginDefault$UserName": user,
         "ctl00$content$LoginDefault$btnLogin": "Submit",
         "ctl00$ddlSearchCategory": "",
         "ctl00$hdnIsTablet": "",
@@ -49,12 +50,13 @@ def login(user, pwd):
         "headerYearTglBayar": time.strftime("%Y",time.localtime(time.time()))
     }
     login_data = urllib.urlencode(login_data)
+    clear_cookie()
     login_request = urllib2.Request(url=login_url, data=login_data, headers=headers)
     login_response = pageOpener.open(login_request, timeout=20).read()
 
-    print("&&&&&&&&&&&&&&&&&")
+    print("&&&&&&&& Login &&&&&&&&&")
     print(login_response)
-    print("&&&&&&&&&&&&&&&&&")
+    print("&&&&&&&& Login &&&&&&&&&")
 
     soup = BeautifulSoup(login_response, "html.parser")
     script = soup.find_all('script', limit=2)
@@ -106,3 +108,35 @@ def get_addr_list():
         }
         addr_list.append(addr)
     return addr_list
+
+def logout(user, pwd):
+    (__VIEWSTATE, __VIEWSTATEGENERATOR) = get_view()
+    logout_data = {
+        "__EVENTARGUMENT": "",
+        "__EVENTTARGET": "ctl00$loginView$LoginStatus$ctl00",
+        "__VIEWSTATE": __VIEWSTATE,
+        "__VIEWSTATEGENERATOR": __VIEWSTATEGENERATOR,
+        "ctl00$Search": "",
+        "ctl00$content$LoginDefault$Password": pwd,
+        "ctl00$content$LoginDefault$UserName": user,
+        "ctl00$ddlSearchCategory": "",
+        "ctl00$hdnIsTablet": "",
+        "ctl00$hdnSearchCategory": "",
+        "eblast": "masukkan email di sini",
+        "headerDayTglBayar": time.strftime("%d", time.localtime(time.time())),
+        "headerKodeTrx": "",
+        "headerMonthTglBayar": time.strftime("%m", time.localtime(time.time())),
+        "headerNilaiBayar": "0",
+        "headerYearTglBayar": time.strftime("%Y", time.localtime(time.time()))
+    }
+    logout_data = urllib.urlencode(logout_data)
+    logout_request = urllib2.Request(url=logout_url, data=logout_data, headers=headers)
+    logout_response = pageOpener.open(logout_request, timeout=20).read()
+    clear_cookie()
+
+    print("&&&&&&&& Logout &&&&&&&&&")
+    print(logout_response)
+    print("&&&&&&&& Logout &&&&&&&&&")
+
+def clear_cookie():
+    myCookie.clear()

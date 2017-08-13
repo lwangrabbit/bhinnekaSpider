@@ -37,8 +37,10 @@ def bhinneka_addr():
     is_login = login(user, pwd)
     if is_login == False:
         return make_response('{"error": "Login Fail: Please check user and password"}', 404)
-    addr_list = get_addr_list()
-    return make_response(json.dumps(addr_list), 200)
+    else:
+        addr_list = get_addr_list()
+        logout(user, pwd)
+        return make_response(json.dumps(addr_list), 200)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8690, debug=True)
